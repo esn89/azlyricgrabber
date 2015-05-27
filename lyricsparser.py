@@ -4,7 +4,6 @@ import requests
 from collections import namedtuple
 from lxml import html
 from lxml.cssselect import CSSSelector
-
 queryurl = "http://search.azlyrics.com/search.php?q=\
         joey+bada%24%24+don%27t+front"
 
@@ -45,31 +44,47 @@ lyricsurl = 'http://www.azlyrics.com/lyrics/eminem/withoutme.html'
 
 
 def getLyrics(lyricsurl):
-    listoflines = []
+    """Gets the lyrics (raw, no formatting) from www.azlyrics.com
+
+    Args:
+        lyricsurl -- the url which contains the actual lyrics
+    Returns:
+        listoflines -- a list of lines which makes up the entire song
+
+    """
 
     page = requests.get(lyricsurl)
     tree = html.fromstring(page.text)
 
-    sel = CSSSelector('div:not([class]):not([id])')
-    results = sel(tree)
-    for r in results:
-        print r.text_content()
-    # match = results[2]
-    # print html.tostring(match)
+    # sel = CSSSelector('div:not([class]):not([id])')
+    # listoflines = sel(tree)
+    # return listoflines
+    # print (listoflines)
+    # for l in listoflines:
+    #     print l.text_content()
 
-    # match = results[44]
-    # for match in results:
-    #    print html.tostring(match)
+    # this verion works slightl better as it actually gives a list
+    lyrics = 0
+    for node in tree.xpath('//div[not(@class) and not(@id)]'):
+        lyrics = node.xpath('./br | ./i')
 
-    # this works
-    # for br in tree.xpath("*//br"):
-    #     if br.tail is not None:
-    #         print br.tail.strip()
-    #         listoflines.append(br.tail)
+    listoflines = []
+    for l in lyrics:
+        if l.tail is None:
+            listoflines.append(l.text)
+        else:
+            listoflines.append(l.tail)
+
+    return listoflines
 
 
-def parseLyrics():
-    pass
+def parseLyrics(listoflines):
+    i = 0
+    for l in listoflines:
+        i = i + 1
+        print l
+    # Need to break entire thing into individual lines...
+    # should do it in the next function, righ tnow it is one whole thing
+    print i
 
-getLyrics(lyricsurl)
-
+parseLyrics(getLyrics(lyricsurl))
