@@ -1,6 +1,7 @@
 #!/usr/bin/python2.7
 
 import requests
+import os
 from collections import namedtuple
 from lxml import html
 queryurl = "http://search.azlyrics.com/search.php?q=\
@@ -39,7 +40,7 @@ def getLyricList(queryurl):
 
     return listofLyrics
 
-lyricsurl = 'http://www.azlyrics.com/lyrics/joeybada/dontfront.html'
+lyricsurl = 'http://www.azlyrics.com/lyrics/eminem/withoutme.html'
 
 
 def getLyrics(lyricsurl):
@@ -62,7 +63,7 @@ def getLyrics(lyricsurl):
 
     for l in lyrics:
         if l.tail is None:
-            # Preserved italics: this part of the text tells the reader
+            # Preserve italics: this part of the text tells the reader
             # that it's the [verse] or [chorus] or [hook], etc
             italicized = "\x1B[3m" + l.text + "\x1B[23m"
             listoflines.append(italicized)
@@ -82,16 +83,22 @@ def parseLyrics(listoflines):
             utf = uu.decode('string escape').decode('utf-8')
             # Strips all \n char so the lyrics don't become too long
             parsedLyrics.append((utf).replace('\n', ""))
-            print utf.replace('\n', "")
+            # print (utf.replace('\n', ""))
         else:
             parsedLyrics.append((l.replace('\n', "")))
-            print (l.replace('\n', ""))
+            # print (l.replace('\n', ""))
 
     return parsedLyrics
 
 
-def formatLyrics():
-    pass
+def formatLyrics(parsedLyrics):
+    rows, columns = os.popen('stty size', 'r').read().split()
+    print rows, columns
 
-parseLyrics(getLyrics(lyricsurl))
+    for line in parsedLyrics:
+        print line.center(int(columns))
+
+
+listlist = parseLyrics(getLyrics(lyricsurl))
+formatLyrics(listlist)
 #print "\x1B[3mHello World\x1B[23m"
