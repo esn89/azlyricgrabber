@@ -4,20 +4,44 @@ import requests
 import sys
 from lxml import html
 
+# this is just an URL for testing, please remove
 urlheader = "http://search.azlyrics.com/search.php?q="
 
 
 def generateURL(artist, title):
+    """Generates an URL based on the user's artist and song title
+
+    Args:
+        artist -- artist of the song
+        title -- title of the song
+    Returns:
+        0 - if the song and artist cannot be found
+        1 - if the song and artist can be found
+        url - the url that was generated based on user input
+
+    """
     # Strip the leading and trailing whitespace.  Put "+" in between
     # useful whitespaces.
     artist = artist.lstrip().rstrip().replace(" ", "+")
     title = title.lstrip().rstrip().replace(" ", "+")
+
+    # Generate the full url
     url = urlheader + artist + "+" + title
     return checkURL(url), url
 
 
 def checkURL(url):
+    """Checks the validity of the URL generated from artist and title
+
+    Args:
+        url -- the generated URL from generateURL(artist, title)
+    Returns:
+        0 - if the song and artist does not exist
+        1 - if the song and artist exists
+
+    """
     haslyrics = 0
+
     try:
         page = requests.get(url)
     except requests.exceptions.RequestException as e:
@@ -34,5 +58,4 @@ def checkURL(url):
             haslyrics = 0
     else:
         haslyrics = 1
-        print message
     return haslyrics
