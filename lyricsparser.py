@@ -3,7 +3,6 @@
 import requests
 from collections import namedtuple
 from lxml import html
-from lxml.cssselect import CSSSelector
 queryurl = "http://search.azlyrics.com/search.php?q=\
         joey+bada%24%24+don%27t+front"
 
@@ -40,7 +39,7 @@ def getLyricList(queryurl):
 
     return listofLyrics
 
-lyricsurl = 'http://www.azlyrics.com/lyrics/eminem/withoutme.html'
+lyricsurl = 'http://www.azlyrics.com/lyrics/joeybada/dontfront.html'
 
 
 def getLyrics(lyricsurl):
@@ -53,25 +52,20 @@ def getLyrics(lyricsurl):
 
     """
 
+    listoflines = []
     page = requests.get(lyricsurl)
     tree = html.fromstring(page.text)
 
-    # sel = CSSSelector('div:not([class]):not([id])')
-    # listoflines = sel(tree)
-    # return listoflines
-    # print (listoflines)
-    # for l in listoflines:
-    #     print l.text_content()
-
-    # this verion works slightl better as it actually gives a list
     lyrics = 0
     for node in tree.xpath('//div[not(@class) and not(@id)]'):
         lyrics = node.xpath('./br | ./i')
 
-    listoflines = []
     for l in lyrics:
         if l.tail is None:
-            listoflines.append(l.text)
+            # Preserved italics: this part of the text tells the reader
+            # that it's the [verse] or [chorus] or [hook], etc
+            italicized = "\x1B[3m" + l.text + "\x1B[23m"
+            listoflines.append(italicized)
         else:
             listoflines.append(l.tail)
 
@@ -79,12 +73,25 @@ def getLyrics(lyricsurl):
 
 
 def parseLyrics(listoflines):
-    i = 0
+    parsedLyrics = []
     for l in listoflines:
-        i = i + 1
-        print l
-    # Need to break entire thing into individual lines...
-    # should do it in the next function, righ tnow it is one whole thing
-    print i
+        # Checks to see if it is unicode, if so, format it into something
+        # readable.
+        if isinstance(l, unicode) is True:
+            uu = unicode(l).encode('unicode escape')
+            utf = uu.decode('string escape').decode('utf-8')
+            # Strips all \n char so the lyrics don't become too long
+            parsedLyrics.append((utf).replace('\n', ""))
+            print utf.replace('\n', "")
+        else:
+            parsedLyrics.append((l.replace('\n', "")))
+            print (l.replace('\n', ""))
+
+    return parsedLyrics
+
+
+def formatLyrics():
+    pass
 
 parseLyrics(getLyrics(lyricsurl))
+#print "\x1B[3mHello World\x1B[23m"
