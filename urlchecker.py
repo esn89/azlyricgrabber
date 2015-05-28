@@ -49,6 +49,19 @@ def checkURL(url):
         sys.exit(1)
 
     tree = html.fromstring(page.text)
+
+    listofresults = tree.xpath('//div[@class="panel-heading"]/b')
+    # Sometimes when input is vague, www.azlyrics.com returns a lot of possible
+    # matches such as "Artist results", "Album results" and "Song results".
+    # I only need "Song Results".
+    # Do not give user the option to filter by artist/album.  It forces them to
+    # enter much stricter input
+    for l in listofresults:
+        if 'Artist' in l.text or 'Album' in l.text:
+            haslyrics = 0
+            print "Lyrics cannot be found."
+            return haslyrics
+
     message = tree.xpath('//div[@class="alert alert-warning"]/text()')
     if message:
         # Lyrics can't be found

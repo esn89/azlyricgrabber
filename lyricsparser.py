@@ -99,6 +99,6 @@ def formatLyrics(parsedLyrics):
         print line.center(int(columns))
 
 
-listlist = parseLyrics(getLyrics(lyricsurl))
-formatLyrics(listlist)
+# listlist = parseLyrics(getLyrics(lyricsurl))
+# formatLyrics(listlist)
 #print "\x1B[3mHello World\x1B[23m"

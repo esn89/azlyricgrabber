@@ -1,5 +1,5 @@
 import urlchecker as uc
-# import lyricsparser as lp
+import lyricsparser as lp
 
 
 def main():
@@ -13,6 +13,7 @@ def main():
         elif not artist and not title:
             artist = raw_input("Enter artist name: ")
             title = raw_input("Enter song title: ")
+            print "\n"
         # If it has title but no artist
         elif not artist and title:
             artist = raw_input("Who is the artist of " + title + " ? ")
@@ -22,8 +23,12 @@ def main():
                               + artist + " ? ")
 
     retval, qurl = uc.generateURL(artist, title)
+
     if retval == 1:
-        print "lyrics are found"
+        print "Possible match(es):\n"
+        print retval, qurl
+        # for match in lp.getLyricList(qurl):
+        #     print match
     else:
         print "NONE"
 
