@@ -22,7 +22,7 @@ def getLyricList(queryurl):
     listofLyrics = []
 
     # Defining the named tuple
-    Lyrics = namedtuple('Lyrics', ['title', 'url'])
+    Lyrics = namedtuple('Lyrics', ['artist', 'title', 'url'])
 
     page = requests.get(queryurl)
     tree = html.fromstring(page.text)
@@ -33,9 +33,8 @@ def getLyricList(queryurl):
         lyricsurl = node.xpath('.//a/@href')[0]
         song = node.xpath('./a/b')[0].text
         artist = node.xpath('./b')[0].text
-        title = song + " - " + artist
         # Creates a new Lyrics tuple
-        l = Lyrics(title, lyricsurl)
+        l = Lyrics(artist, song, lyricsurl)
         listofLyrics.append(l)
 
     return listofLyrics
@@ -91,13 +90,8 @@ def parseLyrics(listoflines):
     return parsedLyrics
 
 
-def formatLyrics(parsedLyrics):
+def getTerminalDimensions():
     rows, columns = os.popen('stty size', 'r').read().split()
-
-    for line in parsedLyrics:
-        print line.center(int(columns))
-
-
-# listlist = parseLyrics(getLyrics(lyricsurl))
-# formatLyrics(listlist)
-#print "\x1B[3mHello World\x1B[23m"
+    return rows, columns
+    # for line in parsedLyrics:
+    #     print line.center(int(columns))

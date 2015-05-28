@@ -1,8 +1,10 @@
+#!/usr/bin/python2.7
+import sys
 import urlchecker as uc
 import userdisplay as ud
 
 
-def main():
+def run():
     artist = ""
     title = ""
     while True:
@@ -26,11 +28,24 @@ def main():
 
     # Yay we have lyrics:
     if retval == 1:
-        info, lurl = ud.selector(qurl)
-        ud.displayLyrics(info, lurl)
+        art, songname, lurl = ud.selector(qurl)
+        ud.displayLyrics(lurl)
     else:
         print "No results found."
 
+
+def main():
+    try:
+        run()
+        rerun = raw_input("Search another song?[Y/n] ")
+        if rerun == "Y" or rerun == "y":
+            run()
+        else:
+            print "\nBye!"
+            sys.exit(0)
+    except KeyboardInterrupt:
+        print "\nShutdown requested, exiting.."
+    sys.exit(0)
 
 if __name__ == '__main__':
     main()
