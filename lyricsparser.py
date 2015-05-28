@@ -15,7 +15,7 @@ def getLyricList(queryurl):
         url -- the result of the search query made by the user which contains
         a list of possible matches.
     Returns:
-        a list of possible matches in the format of:
+        listofLyrics -- a list of possible matches in the format of:
         (title-artist, lyricsurl)
 
     """
@@ -93,7 +93,6 @@ def parseLyrics(listoflines):
 
 def formatLyrics(parsedLyrics):
     rows, columns = os.popen('stty size', 'r').read().split()
-    print rows, columns
 
     for line in parsedLyrics:
         print line.center(int(columns))

@@ -1,46 +1,8 @@
 import urlchecker as uc
-import lyricsparser as lp
-
-
-def selector(qurl):
-    listofmatches = lp.getLyricList(qurl)
-    number = 1
-    if len(listofmatches) > 1:
-        print "Results:\n"
-        for match in listofmatches:
-            print str(number) + ". " + match[0]
-            number = number + 1
-        while True:
-            songno = raw_input("Please select the number from the possible "
-                               "matches:\n--> ")
-            try:
-                songno = int(songno)
-                if songno <= 0 or songno > len(listofmatches):
-                    print "Not a valid selection\n"
-                else:
-                    return songno
-            except ValueError:
-                print "Not a valid number\n"
-
-    else:
-        print "Results:\n"
-        print str(number) + ".  " + listofmatches[0][0] + "\n"
-        while True:
-            songno = raw_input("Please select the number from the possible "
-                               "match:\n--> ")
-            try:
-                songno = int(songno)
-                print songno
-                if songno == 1:
-                    return songno
-                else:
-                    print "Not a valid selection\n"
-            except ValueError:
-                print "Not a valid number\n"
+import userdisplay as ud
 
 
 def main():
-
     artist = ""
     title = ""
     while True:
@@ -59,10 +21,13 @@ def main():
             title = raw_input("What would you like to look up from "
                               + artist + "? ")
 
+    # Checks to see if artist and song combination is valid:
     retval, qurl = uc.generateURL(artist, title)
 
+    # Yay we have lyrics:
     if retval == 1:
-        print selector(qurl)
+        info, lurl = ud.selector(qurl)
+        ud.displayLyrics(info, lurl)
     else:
         print "No results found."
 
