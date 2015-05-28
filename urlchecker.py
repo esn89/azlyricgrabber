@@ -59,7 +59,6 @@ def checkURL(url):
     for l in listofresults:
         if 'Artist' in l.text or 'Album' in l.text:
             haslyrics = 0
-            print "Lyrics cannot be found."
             return haslyrics
 
     message = tree.xpath('//div[@class="alert alert-warning"]/text()')
@@ -67,7 +66,6 @@ def checkURL(url):
         # Lyrics can't be found
         response = message[0]
         if "Sorry" in response:
-            print "Lyrics cannot be found, please check your spelling"
             haslyrics = 0
     else:
         haslyrics = 1
