@@ -1,5 +1,6 @@
 #!/usr/bin/python2.7
 import lyricsparser as lp
+import os
 
 
 def selector(qurl):
@@ -14,13 +15,18 @@ def selector(qurl):
 
     listofmatches = lp.getLyricList(qurl)
     number = 1
+
+    # Clear the previous input screen:
+    os.system('clear')
+
     print "Matches:\n"
     for match in listofmatches:
         # Each listofmatches is a tuple with 3 elements:
         # [0] = artist
         # [1] = title of the song
         # [2] = url of the lyrics
-        print str(number) + ". " + match[1] + " - " + match[0]
+        artist = "\033[1;4;31m" + match[0] + "\033[0m"
+        print str(number) + ". " + match[1] + " - " + artist
         number = number + 1
     while True:
         songno = raw_input("Please select the number from the possible "
