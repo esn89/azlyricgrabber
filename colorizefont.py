@@ -30,6 +30,8 @@ def returnColourFormat(tobeformatted, textcolor, bgcolor="NONE",
         Gives blinking green text on red background
 
     """
+    # First things first, let's makes sure the user input string is not empty:
+
     tcolor = {"BLACK":  "30",
               "RED":    "31",
               "GREEN":  "32",
@@ -58,14 +60,16 @@ def returnColourFormat(tobeformatted, textcolor, bgcolor="NONE",
 
     endstring = "\033[0m"
     startstring = "\033["
-    # For text style
+
+
+    # For text style:
 
     if textstyle.upper() in tstyle:
         startstring = startstring + tstyle[textstyle.upper()] + ";"
     else:
         startstring = startstring + "0" + ";"
 
-    # Color background
+    # For color background:
     # If the background is none, we don't add anything to our format string
     if bgcolor.upper() == "NONE":
         pass
@@ -83,4 +87,3 @@ def returnColourFormat(tobeformatted, textcolor, bgcolor="NONE",
 
     finalstring = startstring + tobeformatted + endstring
     return finalstring
-

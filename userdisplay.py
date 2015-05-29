@@ -1,5 +1,6 @@
 #!/usr/bin/python2.7
 import lyricsparser as lp
+import colorizefont as cf
 import os
 
 
@@ -25,7 +26,7 @@ def selector(qurl):
         # [0] = artist
         # [1] = title of the song
         # [2] = url of the lyrics
-        artist = "\033[1;4;31m" + match[0] + "\033[0m"
+        artist = cf.returnColourFormat(match[1], "RED", "BOLD")
         print str(number) + ". " + match[1] + " - " + artist
         number = number + 1
     while True:
@@ -47,13 +48,22 @@ def selector(qurl):
 
 
 def displayLyrics(lurl):
+    """Displays lyrics on the user's terminal
+
+    Args:
+        lurl -- the URL to the page containing the lyrics
+    Returns:
+        1 -- if successfully displayed
+        0 -- if not successfully displayed
+    """
+
     listoflines = lp.getLyrics(lurl)
     parsed = lp.parseLyrics(listoflines)
-    rows, columns = lp.getTerminalDimensions()
+    height, width = lp.getTerminalDimensions()
 
     try:
         for line in parsed:
-            print line.center(int(columns))
+            print line.center(int(width))
     except:
         return 0
     return 1

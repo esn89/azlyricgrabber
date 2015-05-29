@@ -15,8 +15,8 @@ def generateURL(artist, title):
         artist -- artist of the song
         title -- title of the song
     Returns:
-        0 - if the song and artist cannot be found
-        1 - if the song and artist can be found
+        0 -- if the song and artist cannot be found
+        1 -- if the song and artist can be found
         url - the url that was generated based on user input
 
     """
@@ -36,8 +36,8 @@ def checkURL(url):
     Args:
         url -- the generated URL from generateURL(artist, title)
     Returns:
-        0 - if the song and artist does not exist
-        1 - if the song and artist exists
+        0 -- if the song and artist does not exist
+        1 -- if the song and artist exists
 
     """
     haslyrics = 0

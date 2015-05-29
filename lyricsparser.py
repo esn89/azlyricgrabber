@@ -73,25 +73,43 @@ def getLyrics(lyricsurl):
 
 
 def parseLyrics(listoflines):
+    """Parses the raw lyrics
+
+    Removing leading '\n' chars, places where there are
+    two \n\n (to save space) and unicode chars.
+
+    Args:
+        listoflines -- a list of lines which make up the lyrics which may
+            contain '\n' and/or unicode chars
+    Returns:
+        parsedLyrics -- a list of lines with '\n' removed and unicode that
+            have been converted to utf-8
+
+    """
     parsedLyrics = []
     for l in listoflines:
         # Checks to see if it is unicode, if so, format it into something
         # readable.
         if isinstance(l, unicode) is True:
-            uu = unicode(l).encode('unicode escape')
-            utf = uu.decode('string escape').decode('utf-8')
+            unicodestring = unicode(l).encode('unicode escape')
+            utf = unicodestring.decode('string escape').decode('utf-8')
             # Strips all \n char so the lyrics don't become too long
             parsedLyrics.append((utf).replace('\n', ""))
-            # print (utf.replace('\n', ""))
         else:
             parsedLyrics.append((l.replace('\n', "")))
-            # print (l.replace('\n', ""))
 
     return parsedLyrics
 
 
 def getTerminalDimensions():
-    rows, columns = os.popen('stty size', 'r').read().split()
-    return rows, columns
-    # for line in parsedLyrics:
-    #     print line.center(int(columns))
+    """Returns the height and width of user's terminal window
+
+    Args:
+        none
+    Returns:
+        height = height of the terminal
+        width = width of the terminal
+    """
+
+    height, width = os.popen('stty size', 'r').read().split()
+    return height, width
