@@ -26,7 +26,7 @@ def selector(qurl):
         # [0] = artist
         # [1] = title of the song
         # [2] = url of the lyrics
-        artist = cf.returnColourFormat(match[1], "RED", "BOLD")
+        artist = cf.returnColourFormat(match[0], "RED", "BOLD")
         print str(number) + ". " + match[1] + " - " + artist
         number = number + 1
     while True:
