@@ -30,19 +30,28 @@ def run():
     if retval == 1:
         art, songname, lurl = ud.selector(qurl)
         ud.displayLyrics(lurl)
+        return
     else:
-        print "No results found."
+        print "No results found.\n"
+        return
 
 
 def main():
     try:
-        run()
-        rerun = raw_input("Search another song?[Y/n] ")
-        if rerun == "Y" or rerun == "y":
+        # run()
+        rerun = "Y"
+        # rerun = raw_input("Search another song?[Y/n] ")
+        # if rerun == "Y" or rerun == "y":
+        #     run()
+        # else:
+        #     print "\nBye!"
+        #     sys.exit(0)
+        while rerun == "Y":
+            rerun = raw_input("Search another song?[Y/n] ")
+            if rerun != "Y" or rerun != "y":
+                break
             run()
-        else:
-            print "\nBye!"
-            sys.exit(0)
+
     except KeyboardInterrupt:
         print "\nShutdown requested, exiting.."
     sys.exit(0)
