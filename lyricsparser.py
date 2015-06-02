@@ -2,8 +2,9 @@
 
 import requests
 import os
+import re
 from collections import namedtuple
-from lxml import html
+from lxml import html, etree
 queryurl = "http://search.azlyrics.com/search.php?q=\
         joey+bada%24%24+don%27t+front"
 
@@ -54,22 +55,29 @@ def getLyrics(lyricsurl):
 
     listoflines = []
     page = requests.get(lyricsurl)
-    tree = html.fromstring(page.text)
+    myparser = etree.HTMLParser(encoding="utf-8")
+    tree = etree.HTML(page.text, parser=myparser)
 
-    lyrics = 0
-    for node in tree.xpath('//div[not(@class) and not(@id)]'):
-        lyrics = node.xpath('./br | ./i')
 
-    for l in lyrics:
-        if l.tail is None:
-            # Preserve italics: this part of the text tells the reader
-            # that it's the [verse] or [chorus] or [hook], etc
-            italicized = "\x1B[3m" + l.text + "\x1B[23m"
-            listoflines.append(italicized)
-        else:
-            listoflines.append(l.tail)
+    es = tree.xpath('//div[not(@class) and not(@id)]')
+    es = html.tostring(es[0], encoding='UTF-8')
+    u = unicode(es, "utf-8")
+    unicodestring = unicode(u).encode('unicode escape')
+    utf = unicodestring.decode('string escape').decode('utf-8')
+    print utf
+    # lyrics = html.tostring(es[0])
 
-    return listoflines
+    # print lyrics.count('<br>')
+    # replace all <i> with: "\x1b[3m"
+    # lyrics = lyrics.replace('<i>', "\x1b[3m")
+    # lyrics = lyrics.replace('</i>', "\x1b[23m")
+    # # Removes the comments if there is any:
+    # lyrics = re.sub("<!--.*?-->", "", lyrics)
+    # # Removes the <div> and </div> tags:
+    # lyrics = lyrics.replace("<div>", "").replace("</div>", "")
+
+    # listoflines = lyrics.split('<br>')
+    # return listoflines
 
 
 def parseLyrics(listoflines):
@@ -88,16 +96,7 @@ def parseLyrics(listoflines):
     """
     parsedLyrics = []
     for l in listoflines:
-        # Checks to see if it is unicode, if so, format it into something
-        # readable.
-        if isinstance(l, unicode) is True:
-            unicodestring = unicode(l).encode('unicode escape')
-            utf = unicodestring.decode('string escape').decode('utf-8')
-            # Strips all \n char so the lyrics don't become too long
-            parsedLyrics.append((utf).replace('\n', ""))
-        else:
-            parsedLyrics.append((l.replace('\n', "")))
-
+        print l
     return parsedLyrics
 
 
@@ -113,3 +112,5 @@ def getTerminalDimensions():
 
     height, width = os.popen('stty size', 'r').read().split()
     return height, width
+
+(getLyrics(lyricsurl))
