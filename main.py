@@ -38,22 +38,22 @@ def run():
 
 def main():
     try:
-        # run()
+        run()
         rerun = "Y"
-        # rerun = raw_input("Search another song?[Y/n] ")
-        # if rerun == "Y" or rerun == "y":
-        #     run()
-        # else:
-        #     print "\nBye!"
-        #     sys.exit(0)
         while rerun == "Y":
-            rerun = raw_input("Search another song?[Y/n] ")
-            if rerun != "Y" or rerun != "y":
-                break
-            run()
+            rerun = raw_input("\nSearch another song?[Y/n] ")
+            if rerun == "N" or rerun == "n":
+                print "\nBye!"
+                sys.exit(0)
+            elif rerun == "Y" or rerun == "y":
+                run()
+            else:
+                print "\nInvalid Option\n"
+                rerun = "Y"
+                continue
 
     except KeyboardInterrupt:
-        print "\nShutdown requested, exiting.."
+        print "\nShutdown requested, exiting..."
     sys.exit(0)
 
 if __name__ == '__main__':
