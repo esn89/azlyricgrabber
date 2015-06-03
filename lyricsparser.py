@@ -5,8 +5,6 @@ import os
 import re
 from collections import namedtuple
 from lxml import html, etree
-queryurl = "http://search.azlyrics.com/search.php?q=\
-        joey+bada%24%24+don%27t+front"
 
 
 def getLyricList(queryurl):
@@ -40,7 +38,8 @@ def getLyricList(queryurl):
 
     return listofLyrics
 
-lyricsurl = 'http://www.azlyrics.com/lyrics/eminem/withoutme.html'
+# lyricsurl = 'http://www.azlyrics.com/lyrics/eminem/withoutme.html'
+# lyricsurl = 'http://www.azlyrics.com/lyrics/deathgrips/takyon.html'
 
 
 def getLyrics(lyricsurl):
@@ -49,38 +48,32 @@ def getLyrics(lyricsurl):
     Args:
         lyricsurl -- the url which contains the actual lyrics
     Returns:
-        listoflines -- a list of lines which makes up the entire song
+        lyrics -- a long string which make up the entire song
 
     """
-
-    listoflines = []
+    # request the page
     page = requests.get(lyricsurl)
+    # specify a parser
     myparser = etree.HTMLParser(encoding="utf-8")
     tree = etree.HTML(page.text, parser=myparser)
 
+    # the node of interest begins with <div> and ends in </div>
+    nodestart = tree.xpath('//div[not(@class) and not(@id)]')
+    # We want UTF-8 encoding
+    nodestart = html.tostring(nodestart[0], encoding='UTF-8')
+    uni = unicode(nodestart, "utf-8")
+    unicodestring = unicode(uni).encode('unicode escape')
 
-    es = tree.xpath('//div[not(@class) and not(@id)]')
-    es = html.tostring(es[0], encoding='UTF-8')
-    u = unicode(es, "utf-8")
-    unicodestring = unicode(u).encode('unicode escape')
-    utf = unicodestring.decode('string escape').decode('utf-8')
-    print utf
-    # lyrics = html.tostring(es[0])
+    # Thanks to:
+    # https://www.safaribooksonline.com/library/view/python-cookbook-
+    # 2nd/0596007973/ch01s22.html
+    lyrics = unicodestring.decode('string escape').decode('utf-8')
+    lyrics = lyrics.encode("utf-8")
 
-    # print lyrics.count('<br>')
-    # replace all <i> with: "\x1b[3m"
-    # lyrics = lyrics.replace('<i>', "\x1b[3m")
-    # lyrics = lyrics.replace('</i>', "\x1b[23m")
-    # # Removes the comments if there is any:
-    # lyrics = re.sub("<!--.*?-->", "", lyrics)
-    # # Removes the <div> and </div> tags:
-    # lyrics = lyrics.replace("<div>", "").replace("</div>", "")
-
-    # listoflines = lyrics.split('<br>')
-    # return listoflines
+    return lyrics
 
 
-def parseLyrics(listoflines):
+def parseLyrics(lyrics):
     """Parses the raw lyrics
 
     Removing leading '\n' chars, places where there are
@@ -94,9 +87,32 @@ def parseLyrics(listoflines):
             have been converted to utf-8
 
     """
+    listoflines = []
+
+    # if we have italics, carry it over
+    if lyrics.count('<i>') > 0:
+         # replace all <i> with: "\x1b[3m"
+        lyrics = lyrics.replace('<i>', "\x1b[3m")
+        lyrics = lyrics.replace('</i>', "\x1b[23m")
+    # Removes the comments if there is any:
+    lyrics = re.sub("<!--.*?-->", "", lyrics)
+    # # Removes the <div> and </div> tags:
+    lyrics = lyrics.replace("<div>", "").replace("</div>", "")
+
+    # At the moment, the entire "lyrics" is just one long string, I need to
+    # split them by <br>:
+    listoflines = lyrics.split('<br>')
+
     parsedLyrics = []
     for l in listoflines:
-        print l
+        if l.find('\n\r'):
+            l = l.strip('\n\r')
+            parsedLyrics.append(l)
+        # gotta get rid of unnecessary white space in front of lyrics:
+        if l.startswith('\n') and len(l) > 0:
+            l = l.lstrip('\n')
+            parsedLyrics.append(l)
+
     return parsedLyrics
 
 
@@ -112,5 +128,3 @@ def getTerminalDimensions():
 
     height, width = os.popen('stty size', 'r').read().split()
     return height, width
-
-(getLyrics(lyricsurl))
