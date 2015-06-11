@@ -41,7 +41,7 @@ def main():
         run()
         rerun = "Y"
         while rerun == "Y":
-            rerun = raw_input("\nSearch another song?[Y/n] ")
+            rerun = raw_input("\nSearch another song? [Y/n] ")
             if rerun == "N" or rerun == "n":
                 print "\nBye!"
                 sys.exit(0)
