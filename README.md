@@ -19,6 +19,8 @@ Planning on adding another lyrics site here incase lyrics
 cannot be found on www.azlyrics.com
 
 Also, I am currently working on an ncurses version of this
-lyrics grabbing
+lyrics grabbing.  A preview:
+
+![img](http://i.imgur.com/kcDfO8Z.jpg "preview curses")
 
 
